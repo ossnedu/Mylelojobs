@@ -9,8 +9,14 @@ import android.os.AsyncTask;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
@@ -32,6 +38,24 @@ public class JobActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job);
         new getJobs().execute();
+       // setHasOptionsMenu(true);
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        int id = item.getItemId();
+        if(id == R.id.action_refresh){
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private class getJobs extends AsyncTask<String,String,String> {
@@ -105,7 +129,7 @@ public class JobActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             if(result!=null){
-                Toast.makeText(getApplicationContext(),result,Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),result,Toast.LENGTH_LONG).show();
                 //System.out.println(result);
                 final String JOB_ID = "id";
                 final String JOB_LOGO = "im";
@@ -151,19 +175,37 @@ public class JobActivity extends AppCompatActivity {
                         cv.put(rootJobs.COL_LOGO,logo);cv.put(rootJobs.COL_JOBS,logo);//cv.put(rootJobs.COL_JOBS,jSub);
                         long confirm = db.insert(rootJobs.TABLE_NAME,null,cv);
                         if(confirm!=-1){
-                            Toast.makeText(getApplicationContext(),"Successfull",Toast.LENGTH_LONG).show();
+                            //Toast.makeText(getApplicationContext(),"Successfull",Toast.LENGTH_LONG).show();
                         }
                        // Toast.makeText(getApplicationContext(),jobArray.length(),Toast.LENGTH_LONG);
                         Cursor sd = db.query(rootJobs.TABLE_NAME,new String[]{rootJobs.COL_ID,rootJobs.COL_JOB_ID,rootJobs.COL_LOGO,rootJobs.COL_NAME,
                                 rootJobs.COL_JOBS},null,null,null,null,null,null);
                         sd.moveToFirst();
-                        String jName = sd.getString(sd.getColumnIndex(rootJobs.COL_NAME));
+
+                        final viewAdapter getAdapter = new viewAdapter(getApplicationContext(),sd);
+                        ListView listview = (ListView) findViewById(R.id.listView);
+                        listview.setAdapter(getAdapter);
+                        listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                Cursor cur = (Cursor) getAdapter.getItem(position);
+                                cur.moveToPosition(position);
+                                String ids = cur.getString(cur.getColumnIndexOrThrow(rootJobs.COL_JOB_ID));
+                                Intent intent = new Intent(JobActivity.this, DetailActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putString ("id", ids);
+                                intent.putExtras(bundle);
+
+                                startActivity(intent);
+                            }
+                        });
+                        /*String jName = sd.getString(sd.getColumnIndex(rootJobs.COL_NAME));
                         int jid = sd.getInt(sd.getColumnIndex(rootJobs.COL_ID));
                         int mid = sd.getInt(sd.getColumnIndex(rootJobs.COL_JOB_ID));
                         String gSubJobs = sd.getString(sd.getColumnIndex(rootJobs.COL_JOBS));
                         String jLogo = sd.getString(sd.getColumnIndex(rootJobs.COL_LOGO));
                         Toast.makeText(getApplicationContext(), jName, Toast.LENGTH_SHORT).show();
-                        System.out.println(jid+", "+mid+", "+jLogo+", "+gSubJobs+", "+jName);
+                        System.out.println(jid+", "+mid+", "+jLogo+", "+gSubJobs+", "+jName);*/
                     }
 
                 }catch (JSONException e){
