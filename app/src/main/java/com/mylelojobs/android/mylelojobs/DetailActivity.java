@@ -1,11 +1,20 @@
 package com.mylelojobs.android.mylelojobs;
 
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.widget.ListView;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,6 +22,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import com.mylelojobs.android.mylelojobs.dbcontract.*;
 
 public class DetailActivity extends AppCompatActivity {
     public String gid;
@@ -23,7 +33,6 @@ public class DetailActivity extends AppCompatActivity {
         //Bundle getBundle = null;
         Bundle getBundle = this.getIntent().getExtras();
         gid = getBundle.getString("id");
-        System.out.println("I getting to oncreate");
         new getJobDetail().execute();
     }
 
@@ -41,14 +50,14 @@ public class DetailActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params){
-            System.out.println("i getting this "+gid);
+
             final String STRING_BASE_URL = "http://www.mylelojobs.com";
             final String ID_PARAM = "id";
             final String PATH = "getDetail.php";
             Uri builtUri = Uri.parse(STRING_BASE_URL).buildUpon()
                     .appendPath(PATH)
                     .appendQueryParameter(ID_PARAM,gid).build();
-            System.out.println("I getting here o");
+
             try {
                 URL url = new URL(builtUri.toString());
                 // Create the request to OpenWeatherMap, and open the connection
@@ -60,10 +69,9 @@ public class DetailActivity extends AppCompatActivity {
                 StringBuffer buffer = new StringBuffer();
                 if (inputStream == null) {
                     // Nothing to do.
-                    System.out.println("I just got out with nothing");
                     return null;
                 }
-                System.out.println("I something o");
+
                 reader = new BufferedReader(new InputStreamReader(inputStream));
                 String line;
                 while ((line = reader.readLine()) != null) {
@@ -75,7 +83,7 @@ public class DetailActivity extends AppCompatActivity {
 
                 if (buffer.length() == 0) {
                     // Stream was empty.  No point in parsing.
-                    System.out.println("I read nothing");
+                    //System.out.println("I read nothing");
                     return null;
                 }
                 jsonObject = buffer.toString();
@@ -85,6 +93,67 @@ public class DetailActivity extends AppCompatActivity {
 
             }
             return jsonObject;
+        }
+
+        @Override
+        protected void onPostExecute(String result){
+            if(result!=null){
+                final String DET_ID = "Id";
+                final String DET_NAME = "Job_Name";
+                final String DET_COMP_NAME = "Company_Name";
+                final String DET_COM_PRO = "Company_Profile";
+                final String DET_LAST = "Last_Entry_Date";
+                final String DET_LOGO = "company_logo";
+                final String DET_COM_WEB = "Company_Website";
+                final String DET_SUB = "sub";
+                final String SUB_ID = "Id";
+                final String SUB_NAME = "Sub_Job_Name";
+
+                try{
+                    JSONObject getDetail = new JSONObject(result);
+                    System.out.println(getDetail.length());
+                    int id = getDetail.getInt(DET_ID);
+                    String nm = getDetail.getString(DET_NAME);
+                    String pr = getDetail.getString(DET_COM_PRO);
+                    String lg = getDetail.getString(DET_LOGO);
+                    String dt = getDetail.getString(DET_LAST);
+                    String web = getDetail.getString(DET_COM_WEB);
+                    JSONArray sb = getDetail.getJSONArray(DET_SUB);
+                    String com_nm = getDetail.getString(DET_COMP_NAME);
+                    String jSub = "";
+                    dbhelper helper = new dbhelper(getApplicationContext());
+                    SQLiteDatabase db = helper.getReadableDatabase();
+                    ContentValues cont = new ContentValues();
+                    cont.put(jobDetail.COL_NAME,nm);cont.put(jobDetail.COL_DETAILS,pr);cont.put(jobDetail.COL_COMPANY,com_nm);
+                    cont.put(jobDetail.COL_DATE,dt);cont.put(jobDetail.COL_LOGO,lg);cont.put(jobDetail.COL_WEB,web);
+                    for (int i=0; i<sb.length(); i++){
+
+                        JSONObject getSub = sb.getJSONObject(i);
+                        int sid = getSub.getInt(SUB_ID);
+                        String sn = getSub.getString(SUB_NAME);
+                        if(!jSub.isEmpty()){
+                            jSub = jSub+"@";
+                        }
+                        jSub = sid+","+sn;
+
+                    }
+
+                    long confirm = db.insert(jobDetail.TABLE_NAME,null,cont);
+                    if(confirm!=-1){
+                        Toast.makeText(getApplicationContext(),"Inerted",Toast.LENGTH_LONG);
+                    }
+
+                    Cursor sd = db.query(jobDetail.TABLE_NAME,new String[]{jobDetail.COL_ID,jobDetail.COL_NAME,jobDetail.COL_LOGO,jobDetail.COL_DETAILS,
+                            jobDetail.COL_JOBS,jobDetail.COL_LOGO,jobDetail.COL_WEB,jobDetail.COL_DATE},null,null,null,null,null,null);
+                    sd.moveToFirst();
+                    final viewAdapter getAdapter = new viewAdapter(getApplicationContext(),sd);
+                    ListView listView = (ListView) findViewById(R.id.detailView);
+                    listView.setAdapter(getAdapter);
+
+                }catch (JSONException e){
+
+                }
+            }
         }
 
     }
