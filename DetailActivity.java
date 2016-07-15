@@ -55,14 +55,14 @@ public class DetailActivity extends AppCompatActivity {
         return true;
     }
 
-    public void viewJobs(View v) {
-        int gid=v.getId();
+    public void viewSubjobs(View v) {
+/*int gid=v.getId();
         //System.out.println(gid);
         Intent intent = new Intent(DetailActivity.this,SubjobsActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("id",""+gid);
         intent.putExtras(bundle);
-        startActivity(intent);
+        startActivity(intent);*/
     }
 
     private class getJobDetail extends AsyncTask<String,String,String> {
@@ -192,15 +192,27 @@ public class DetailActivity extends AppCompatActivity {
                     for (int i=0; i<sb.length(); i++){
 
                         JSONObject getSub = sb.getJSONObject(i);
-                        int gid = getSub.getInt(SUB_ID);
+                        final int gid = getSub.getInt(SUB_ID);
                         String sn = getSub.getString(SUB_NAME);
                         //String sub_dt = getSub.getString(SUB_DESC);
                         View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.subjobs_item,rLay,false);
-                        final TextView subTitle = (TextView)view.findViewById(R.id.subTitle);
+                        TextView subTitle = (TextView)view.findViewById(R.id.subTitle);
                         subTitle.setId(gid);
                         subTitle.setText(sn);
-                        rLay.addView(view);
 
+
+                        subTitle.setOnClickListener(new View.OnClickListener(){
+                            @Override
+                            public void onClick(View v){
+                                System.out.println("I am here");
+                                Intent intent = new Intent(DetailActivity.this,SubjobsActivity.class);
+                                Bundle bundle = new Bundle();
+                                bundle.putString("id",""+gid);
+                                intent.putExtras(bundle);
+                                startActivity(intent);
+                            }
+                        });
+                        rLay.addView(view);
                     }
 
                    //System.out.println(jdt+", "+jnm);
