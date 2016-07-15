@@ -12,8 +12,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -115,10 +117,11 @@ public class DetailActivity extends AppCompatActivity {
                 final String DET_SUB = "sub";
                 final String SUB_ID = "Id";
                 final String SUB_NAME = "Sub_Job_Name";
+                final String SUB_DESC = "Job_Description";
 
                 try{
                     JSONObject getDetail = new JSONObject(result);
-                    System.out.println(getDetail.length());
+                    System.out.println(getDetail);
                     int id = getDetail.getInt(DET_ID);
                     String nm = getDetail.getString(DET_NAME);
                     String pr = getDetail.getString(DET_COM_PRO);
@@ -133,7 +136,7 @@ public class DetailActivity extends AppCompatActivity {
                     ContentValues cont = new ContentValues();
                     //cont.put(jobDetail.COL_NAME,nm);cont.put(jobDetail.COL_DETAILS,pr);cont.put(jobDetail.COL_COMPANY,com_nm);
                     //cont.put(jobDetail.COL_DATE,dt);cont.put(jobDetail.COL_LOGO,lg);cont.put(jobDetail.COL_WEB,web);
-                    for (int i=0; i<sb.length(); i++){
+                    /*for (int i=0; i<sb.length(); i++){
 
                         JSONObject getSub = sb.getJSONObject(i);
                         int sid = getSub.getInt(SUB_ID);
@@ -143,7 +146,7 @@ public class DetailActivity extends AppCompatActivity {
                         }
                         jSub = sid+","+sn;
 
-                    }
+                    }*/
 
                     /*long confirm = db.insert(jobDetail.TABLE_NAME,null,cont);
                     if(confirm!=-1){
@@ -156,7 +159,7 @@ public class DetailActivity extends AppCompatActivity {
                     //final viewAdapter getAdapter = new viewAdapter(getApplicationContext(),sd);
                    // ListView listView = (ListView) findViewById(R.id.detailView);
                     //listView.setAdapter(getAdapter);
-                    RelativeLayout rLay= (RelativeLayout) findViewById(R.id.detailView);
+                    LinearLayout rLay= (LinearLayout) findViewById(R.id.detailView);
                     View v = LayoutInflater.from(getApplicationContext()).inflate(R.layout.show_job_items,rLay);
                     TextView mt = (TextView) v.findViewById(R.id.jobTitle);
                     TextView md = (TextView) v.findViewById(R.id.profile);
@@ -169,8 +172,24 @@ public class DetailActivity extends AppCompatActivity {
                     String jdt = pr;
                     mt.setText(jnm);
                     md.setText(jdt);
+                    //View view;
+                    //TextView subTitle;
+                    System.out.println(sb.length());
+                    for (int i=0; i<sb.length(); i++){
 
-                   System.out.println(jdt+", "+jnm);
+                        JSONObject getSub = sb.getJSONObject(i);
+                        int sid = getSub.getInt(SUB_ID);
+                        String sn = getSub.getString(SUB_NAME);
+                        //String sub_dt = getSub.getString(SUB_DESC);
+                        View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.subjobs_item,rLay,false);
+                        TextView subTitle = (TextView)view.findViewById(R.id.subTitle);
+                        subTitle.setId(1000+i);
+                        subTitle.setText(sn);
+                        rLay.addView(view);
+
+                    }
+
+                   //System.out.println(jdt+", "+jnm);
 
                 }catch (JSONException e){
 
