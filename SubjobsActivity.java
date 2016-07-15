@@ -2,7 +2,6 @@ package com.mylelojobs.android.mylelojobs;
 
 import android.content.ContentValues;
 import android.content.Intent;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -12,13 +11,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,22 +24,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.zip.Inflater;
 
-import com.mylelojobs.android.mylelojobs.dbcontract.*;
+public class SubjobsActivity extends AppCompatActivity {
 
-public class DetailActivity extends AppCompatActivity {
     public String gid;
-    public String sid;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_detail);
-        //Bundle getBundle = null;
+        setContentView(R.layout.activity_subjobs);
         Bundle getBundle = this.getIntent().getExtras();
         gid = getBundle.getString("id");
-        new getJobDetail().execute();
+        new getSubjobs().execute();
     }
 
     @Override
@@ -55,17 +44,7 @@ public class DetailActivity extends AppCompatActivity {
         return true;
     }
 
-    public void viewJobs(View v) {
-        int gid=v.getId();
-        //System.out.println(gid);
-        Intent intent = new Intent(DetailActivity.this,SubjobsActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString("id",""+gid);
-        intent.putExtras(bundle);
-        startActivity(intent);
-    }
-
-    private class getJobDetail extends AsyncTask<String,String,String> {
+    private class getSubjobs extends AsyncTask<String,String,String> {
         HttpURLConnection conn = null;
         BufferedReader reader = null;
         String jsonObject = null;
@@ -75,7 +54,7 @@ public class DetailActivity extends AppCompatActivity {
 
             final String STRING_BASE_URL = "http://www.mylelojobs.com";
             final String ID_PARAM = "id";
-            final String PATH = "getDetail.php";
+            final String PATH = "getSubjobs.php";
             Uri builtUri = Uri.parse(STRING_BASE_URL).buildUpon()
                     .appendPath(PATH)
                     .appendQueryParameter(ID_PARAM,gid).build();
@@ -120,30 +99,31 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result){
             if(result!=null){
-                final String DET_ID = "Id";
-                final String DET_NAME = "Job_Name";
-                final String DET_COMP_NAME = "Company_Name";
-                final String DET_COM_PRO = "Company_Profile";
-                final String DET_LAST = "Last_Entry_Date";
-                final String DET_LOGO = "company_logo";
-                final String DET_COM_WEB = "Company_Website";
-                final String DET_SUB = "sub";
-                final String SUB_ID = "Id";
-                final String SUB_NAME = "Sub_Job_Name";
-                final String SUB_DESC = "Job_Description";
+
+                final String SUB_ID = "id";
+                final String SUB_NAME = "sjn";
+                final String SUB_DESC = "jdesc";
+                final String SUB_LOGO = "lg";
+                final String SUB_COURSE = "crs";
+                final String SUB_GRADE = "deg";
+                final String SUB_TYPE = "degt";
+                final String SUB_LOC = "st";
+                final String SUB_EXP = "exp";
+
 
                 try{
                     JSONObject getDetail = new JSONObject(result);
                     System.out.println(getDetail);
-                    int id = getDetail.getInt(DET_ID);
-                    String nm = getDetail.getString(DET_NAME);
-                    String pr = getDetail.getString(DET_COM_PRO);
-                    String lg = getDetail.getString(DET_LOGO);
-                    String dt = getDetail.getString(DET_LAST);
-                    String web = getDetail.getString(DET_COM_WEB);
-                    JSONArray sb = getDetail.getJSONArray(DET_SUB);
-                    String com_nm = getDetail.getString(DET_COMP_NAME);
-                    String jSub = "";
+                    int id = getDetail.getInt(SUB_ID);
+                    String nm = getDetail.getString(SUB_NAME);
+                    String pr = getDetail.getString(SUB_DESC);
+                    String lg = getDetail.getString(SUB_LOGO);
+                    String dt = getDetail.getString(SUB_EXP);
+                    String course = getDetail.getString(SUB_COURSE);
+                    String deg = getDetail.getString(SUB_GRADE);
+                    String typ = getDetail.getString(SUB_TYPE);
+                    String loc = getDetail.getString(SUB_LOC);
+                    //String jSub = "";
                     dbhelper helper = new dbhelper(getApplicationContext());
                     SQLiteDatabase db = helper.getReadableDatabase();
                     ContentValues cont = new ContentValues();
@@ -156,54 +136,47 @@ public class DetailActivity extends AppCompatActivity {
                      //   String sn = getSub.getString(SUB_NAME);
                      //   if(!jSub.isEmpty()){
                      //       jSub = jSub+"@";
-                     //   }
-                     //   jSub = sid+","+sn;
+                      //  }
+                      //  jSub = sid+","+sn;
 
                     //}*/
 
-                    //long confirm = db.insert(jobDetail.TABLE_NAME,null,cont);
-                   // if(confirm!=-1){
-                    //    Toast.makeText(getApplicationContext(),"Inerted",Toast.LENGTH_LONG);
-                    //}*/
+                    /*long confirm = db.insert(jobDetail.TABLE_NAME,null,cont);
+                    if(confirm!=-1){
+                        Toast.makeText(getApplicationContext(),"Inerted",Toast.LENGTH_LONG);
+                    }*/
 
                     //Cursor sd = db.query(jobDetail.TABLE_NAME,new String[]{jobDetail.COL_ID,jobDetail.COL_NAME,jobDetail.COL_LOGO,jobDetail.COL_DETAILS,
-                            //jobDetail.COL_JOBS,jobDetail.COL_LOGO,jobDetail.COL_WEB,jobDetail.COL_DATE},null,null,null,null,null,null);
+                    //jobDetail.COL_JOBS,jobDetail.COL_LOGO,jobDetail.COL_WEB,jobDetail.COL_DATE},null,null,null,null,null,null);
                     //sd.moveToFirst();
                     //final viewAdapter getAdapter = new viewAdapter(getApplicationContext(),sd);
-                   // ListView listView = (ListView) findViewById(R.id.detailView);
+                    // ListView listView = (ListView) findViewById(R.id.detailView);
                     //listView.setAdapter(getAdapter);
-                    LinearLayout rLay= (LinearLayout) findViewById(R.id.detailView);
-                    View v = LayoutInflater.from(getApplicationContext()).inflate(R.layout.show_job_items,rLay);
-                    TextView mt = (TextView) v.findViewById(R.id.jobTitle);
-                    TextView md = (TextView) v.findViewById(R.id.profile);
-
+                    LinearLayout rLay= (LinearLayout) findViewById(R.id.subjobView);
+                    View v = LayoutInflater.from(getApplicationContext()).inflate(R.layout.subjobs_item,rLay);
+                    TextView mt = (TextView) v.findViewById(R.id.subName);
+                    TextView md = (TextView) v.findViewById(R.id.subDesc);
+                    TextView dty = (TextView) v.findViewById(R.id.degType);
+                    TextView cse = (TextView)v.findViewById(R.id.course);
+                    TextView grd = (TextView)v.findViewById(R.id.degGrade);
+                    TextView exp = (TextView)v.findViewById(R.id.jobExp);
+                    TextView lc = (TextView)v.findViewById(R.id.location);
 
                     //TextView item = (TextView)findViewById(R.id.detailView);
                     //View ch = getLayoutInflater().inflate(R.layout.show_job_items,null);
-                   // item.addView(ch);
+                    // item.addView(ch);
 
-                    String jnm = nm;
-                    String jdt = pr;
-                    mt.setText(jnm);
-                    md.setText(jdt);
+                    String jnm = nm; String glg = lg; String gdt = dt; String gcs = course;
+                    String jdt = pr; String gdeg = deg; String gtyp = typ; String gloc = loc;
+                    mt.setText(jnm); dty.setText(gtyp); cse.setText(gcs); grd.setText(gdeg);
+                    md.setText(jdt); exp.setText(gdt); lc.setText(gloc);
                     //View view;
-                    //TextView subTitle;
-                    System.out.println(sb.length());
-                    for (int i=0; i<sb.length(); i++){
 
-                        JSONObject getSub = sb.getJSONObject(i);
-                        int gid = getSub.getInt(SUB_ID);
-                        String sn = getSub.getString(SUB_NAME);
-                        //String sub_dt = getSub.getString(SUB_DESC);
-                        View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.subjobs_item,rLay,false);
-                        final TextView subTitle = (TextView)view.findViewById(R.id.subTitle);
-                        subTitle.setId(gid);
-                        subTitle.setText(sn);
-                        rLay.addView(view);
+                    //subTitle.setId(1000+i);
+                    //subTitle.setText(sn);
+                   // rLay.addView(view);
 
-                    }
-
-                   //System.out.println(jdt+", "+jnm);
+                    //System.out.println(jdt+", "+jnm);
 
                 }catch (JSONException e){
 
