@@ -165,10 +165,10 @@ public class SubjobsActivity extends AppCompatActivity {
                     //View ch = getLayoutInflater().inflate(R.layout.show_job_items,null);
                     // item.addView(ch);
                     mTxt.setText(nm);
-                    //String jnm = nm; //String glg = lg; String gdt = dt; String gcs = course;
-                    //String jdt = pr; String gdeg = deg; String gtyp = typ; String gloc = loc;
-                     //dty.setText(gtyp); cse.setText(gcs); grd.setText(gdeg);
-                    //md.setText(jdt); exp.setText(gdt); lc.setText(gloc);
+
+                     dty.setText(typ); grd.setText(deg);
+                    //md.setText(jdt);
+                     exp.setText(dt); lc.setText(loc);
                     //View view;
 
                     //subTitle.setId(1000+i);
