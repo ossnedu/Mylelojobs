@@ -196,6 +196,9 @@ public class JobActivity extends AppCompatActivity {
                                 bundle.putString ("id", ids);
                                 intent.putExtras(bundle);
 
+                                //ListView listView = (ListView) findViewById(R.id.detailView);
+                                //listView.removeAllViewsInLayout();
+
                                 startActivity(intent);
                             }
                         });

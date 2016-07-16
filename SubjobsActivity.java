@@ -88,7 +88,7 @@ public class SubjobsActivity extends AppCompatActivity {
                     return null;
                 }
                 jsonObject = buffer.toString();
-                //System.out.println(jsonObject);
+                System.out.println(jsonObject);
 
             }catch (IOException e){
 
@@ -102,41 +102,42 @@ public class SubjobsActivity extends AppCompatActivity {
 
                 final String SUB_ID = "id";
                 final String SUB_NAME = "sjn";
-               // final String SUB_DESC = "jdesc";
+                final String SUB_DESC = "jdesc";
                 final String SUB_LOGO = "lg";
-               // final String SUB_COURSE = "crs";
+                final String SUB_COURSE = "crs";
                 final String SUB_GRADE = "deg";
                 final String SUB_TYPE = "degt";
                 final String SUB_LOC = "st";
                 final String SUB_EXP = "exp";
 
+
                 try{
                     JSONObject getDetail = new JSONObject(result);
-                    System.out.println("checksesi "+getDetail);
+                    System.out.println(getDetail);
                     int id = getDetail.getInt(SUB_ID);
                     String nm = getDetail.getString(SUB_NAME);
-                    //String pr = getDetail.getString(SUB_DESC);
+                    String pr = getDetail.getString(SUB_DESC);
                     String lg = getDetail.getString(SUB_LOGO);
                     String dt = getDetail.getString(SUB_EXP);
-                    //String course = getDetail.getString(SUB_COURSE);
+                    String course = getDetail.getString(SUB_COURSE);
                     String deg = getDetail.getString(SUB_GRADE);
                     String typ = getDetail.getString(SUB_TYPE);
                     String loc = getDetail.getString(SUB_LOC);
                     //String jSub = "";
-                   /* dbhelper helper = new dbhelper(getApplicationContext());
+                    dbhelper helper = new dbhelper(getApplicationContext());
                     SQLiteDatabase db = helper.getReadableDatabase();
-                    ContentValues cont = new ContentValues();*/
+                    ContentValues cont = new ContentValues();
                     //cont.put(jobDetail.COL_NAME,nm);cont.put(jobDetail.COL_DETAILS,pr);cont.put(jobDetail.COL_COMPANY,com_nm);
                     //cont.put(jobDetail.COL_DATE,dt);cont.put(jobDetail.COL_LOGO,lg);cont.put(jobDetail.COL_WEB,web);
                     //for (int i=0; i<sb.length(); i++){
 
-                     //   JSONObject getSub = sb.getJSONObject(i);
-                     //   int sid = getSub.getInt(SUB_ID);
-                     //   String sn = getSub.getString(SUB_NAME);
-                     //   if(!jSub.isEmpty()){
-                     //       jSub = jSub+"@";
-                      //  }
-                      //  jSub = sid+","+sn;
+                    //   JSONObject getSub = sb.getJSONObject(i);
+                    //   int sid = getSub.getInt(SUB_ID);
+                    //   String sn = getSub.getString(SUB_NAME);
+                    //   if(!jSub.isEmpty()){
+                    //       jSub = jSub+"@";
+                    //  }
+                    //  jSub = sid+","+sn;
 
                     //}*/
 
@@ -152,28 +153,36 @@ public class SubjobsActivity extends AppCompatActivity {
                     // ListView listView = (ListView) findViewById(R.id.detailView);
                     //listView.setAdapter(getAdapter);
                     LinearLayout rLay= (LinearLayout) findViewById(R.id.subjobView);
-                    View v = LayoutInflater.from(getApplicationContext()).inflate(R.layout.main_subjob_view,rLay);
-                    TextView mTxt = (TextView) v.findViewById(R.id.subName);
-                    TextView md = (TextView) v.findViewById(R.id.subDesc);
-                    TextView dty = (TextView) v.findViewById(R.id.degType);
-                    TextView cse = (TextView)v.findViewById(R.id.course);
+                    View v = LayoutInflater.from(getApplicationContext()).inflate(R.layout.subjobs_item,rLay);
+                    TextView sbt = (TextView) v.findViewById(R.id.subjobTitle);
+                    TextView des = (TextView) v.findViewById(R.id.subjobDesc);
+                    TextView mt = (TextView) v.findViewById(R.id.subjobTyp);
+                    TextView md = (TextView) v.findViewById(R.id.subjobCourse);
+                    TextView dty = (TextView) v.findViewById(R.id.subjobLoc);
+                    /*TextView cse = (TextView)v.findViewById(R.id.course);
                     TextView grd = (TextView)v.findViewById(R.id.degGrade);
                     TextView exp = (TextView)v.findViewById(R.id.jobExp);
-                    TextView lc = (TextView)v.findViewById(R.id.location);
-
+                    TextView lc = (TextView)v.findViewById(R.id.location);*/
                     //TextView item = (TextView)findViewById(R.id.detailView);
                     //View ch = getLayoutInflater().inflate(R.layout.show_job_items,null);
                     // item.addView(ch);
-                    mTxt.setText(nm);
 
-                     dty.setText(typ); grd.setText(deg);
-                    //md.setText(jdt);
-                     exp.setText(dt); lc.setText(loc);
+                    sbt.setText(nm);
+                    des.setText(pr);
+                    mt.setText(typ);
+                    md.setText(course);
+                    dty.setText(loc);
+
+
+                    /*String jnm = nm; String glg = lg; String gdt = dt; String gcs = course;
+                    String jdt = pr; String gdeg = deg; String gtyp = typ; String gloc = loc;
+                    mt.setText(jnm); dty.setText(gtyp); cse.setText(gcs); grd.setText(gdeg);
+                    md.setText(jdt); exp.setText(gdt); lc.setText(gloc);*/
                     //View view;
 
                     //subTitle.setId(1000+i);
                     //subTitle.setText(sn);
-                   // rLay.addView(view);
+                    // rLay.addView(view);
 
                     //System.out.println(jdt+", "+jnm);
 

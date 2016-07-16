@@ -10,9 +10,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.MenuInflater;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -30,8 +32,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.zip.Inflater;
-
 import com.mylelojobs.android.mylelojobs.dbcontract.*;
 
 public class DetailActivity extends AppCompatActivity {
@@ -42,6 +42,8 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
+
+
         //Bundle getBundle = null;
         Bundle getBundle = this.getIntent().getExtras();
         gid = getBundle.getString("id");
@@ -55,15 +57,17 @@ public class DetailActivity extends AppCompatActivity {
         return true;
     }
 
-    public void viewSubjobs(View v) {
-/*int gid=v.getId();
+    /*public void viewJobs(View v) {
+        int gid=v.getId();
         //System.out.println(gid);
         Intent intent = new Intent(DetailActivity.this,SubjobsActivity.class);
         Bundle bundle = new Bundle();
         bundle.putString("id",""+gid);
         intent.putExtras(bundle);
-        startActivity(intent);*/
-    }
+        startActivity(intent);
+    }*/
+
+
 
     private class getJobDetail extends AsyncTask<String,String,String> {
         HttpURLConnection conn = null;
@@ -130,65 +134,90 @@ public class DetailActivity extends AppCompatActivity {
                 final String DET_SUB = "sub";
                 final String SUB_ID = "Id";
                 final String SUB_NAME = "Sub_Job_Name";
-                final String SUB_DESC = "Job_Description";
 
                 try{
                     JSONObject getDetail = new JSONObject(result);
-                    System.out.println(getDetail);
+                    System.out.println(getDetail.length());
                     int id = getDetail.getInt(DET_ID);
                     String nm = getDetail.getString(DET_NAME);
                     String pr = getDetail.getString(DET_COM_PRO);
-                    String lg = getDetail.getString(DET_LOGO);
+                    final String lg = getDetail.getString(DET_LOGO);
                     String dt = getDetail.getString(DET_LAST);
-                    String web = getDetail.getString(DET_COM_WEB);
+                    final String web = getDetail.getString(DET_COM_WEB);
                     JSONArray sb = getDetail.getJSONArray(DET_SUB);
                     String com_nm = getDetail.getString(DET_COMP_NAME);
                     String jSub = "";
+                    //String jjSub = "";
+                    //String ssid = "";
                     dbhelper helper = new dbhelper(getApplicationContext());
                     SQLiteDatabase db = helper.getReadableDatabase();
                     ContentValues cont = new ContentValues();
                     //cont.put(jobDetail.COL_NAME,nm);cont.put(jobDetail.COL_DETAILS,pr);cont.put(jobDetail.COL_COMPANY,com_nm);
                     //cont.put(jobDetail.COL_DATE,dt);cont.put(jobDetail.COL_LOGO,lg);cont.put(jobDetail.COL_WEB,web);
-                    //for (int i=0; i<sb.length(); i++){
+                    /*for (int i=0; i<sb.length(); i++){
 
-                     //   JSONObject getSub = sb.getJSONObject(i);
-                     //   int sid = getSub.getInt(SUB_ID);
-                     //   String sn = getSub.getString(SUB_NAME);
-                     //   if(!jSub.isEmpty()){
-                     //       jSub = jSub+"@";
-                     //   }
-                     //   jSub = sid+","+sn;
+                        JSONObject getSub = sb.getJSONObject(i);
+                        int sid = getSub.getInt(SUB_ID);
+                        String sn = getSub.getString(SUB_NAME);
+                        if(!jSub.isEmpty()){
+                            jSub = jSub+"@";
+                        }
+                        jSub = sid+","+sn;
+                        jjSub = sn;
+                        //ssid = sid;
 
-                    //}*/
 
-                    //long confirm = db.insert(jobDetail.TABLE_NAME,null,cont);
-                   // if(confirm!=-1){
-                    //    Toast.makeText(getApplicationContext(),"Inerted",Toast.LENGTH_LONG);
-                    //}*/
+                    }*/
 
-                    //Cursor sd = db.query(jobDetail.TABLE_NAME,new String[]{jobDetail.COL_ID,jobDetail.COL_NAME,jobDetail.COL_LOGO,jobDetail.COL_DETAILS,
-                            //jobDetail.COL_JOBS,jobDetail.COL_LOGO,jobDetail.COL_WEB,jobDetail.COL_DATE},null,null,null,null,null,null);
-                    //sd.moveToFirst();
-                    //final viewAdapter getAdapter = new viewAdapter(getApplicationContext(),sd);
-                   // ListView listView = (ListView) findViewById(R.id.detailView);
-                    //listView.setAdapter(getAdapter);
+                    /*long confirm = db.insert(jobDetail.TABLE_NAME,null,cont);
+                    if(confirm!=-1){
+
+
+                        Toast.makeText(getApplicationContext(),"Inerted",Toast.LENGTH_LONG);
+
+                    }
+
+
+                    Cursor sd = db.query(jobDetail.TABLE_NAME,new String[]{jobDetail.COL_ID,jobDetail.COL_NAME,jobDetail.COL_LOGO,jobDetail.COL_DETAILS,
+                            jobDetail.COL_JOBS,jobDetail.COL_LOGO,jobDetail.COL_WEB,jobDetail.COL_DATE},null,null,null,null,null,null);
+                    sd.moveToFirst();
+                    final viewAdapter getAdapter = new viewAdapter(getApplicationContext(),sd);
+                    ListView listView = (ListView) findViewById(R.id.detailView);
+                    //listView.removeAllViewsInLayout();
+                    listView.setAdapter(getAdapter);*/
+                    Button apply = (Button) findViewById(R.id.apply);
+                    apply.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                            Toast.makeText(getApplicationContext(),web,Toast.LENGTH_LONG).show();
+                            //int sid = getSub.getInt(SUB_ID);
+                            Uri uri = Uri.parse("http://www.mylelojobs.com"); // missing 'http://' will cause crashed
+                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                            startActivity(intent);
+
+
+                        }
+                    });
+
+
                     LinearLayout rLay= (LinearLayout) findViewById(R.id.detailView);
                     View v = LayoutInflater.from(getApplicationContext()).inflate(R.layout.show_job_items,rLay);
                     TextView mt = (TextView) v.findViewById(R.id.jobTitle);
                     TextView md = (TextView) v.findViewById(R.id.profile);
-
+                    //TextView sj = (TextView) v.findViewById(R.id.subJob);
 
                     //TextView item = (TextView)findViewById(R.id.detailView);
                     //View ch = getLayoutInflater().inflate(R.layout.show_job_items,null);
-                   // item.addView(ch);
+                    // item.addView(ch);
 
                     String jnm = nm;
                     String jdt = pr;
+                    //String jsb = jjSub;
                     mt.setText(jnm);
                     md.setText(jdt);
-                    //View view;
-                    //TextView subTitle;
-                    System.out.println(sb.length());
+                    //sj.setText(jsb);
+
                     for (int i=0; i<sb.length(); i++){
 
                         JSONObject getSub = sb.getJSONObject(i);
@@ -196,26 +225,32 @@ public class DetailActivity extends AppCompatActivity {
                         String sn = getSub.getString(SUB_NAME);
                         //String sub_dt = getSub.getString(SUB_DESC);
                         View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.subjobs_item,rLay,false);
-                        TextView subTitle = (TextView)view.findViewById(R.id.subTitle);
+                        TextView subTitle = (TextView)view.findViewById(R.id.subjobTitle);
                         subTitle.setId(gid);
                         subTitle.setText(sn);
+                        //subTitle.setPadding(10,0,0,0);
 
-
-                        subTitle.setOnClickListener(new View.OnClickListener(){
+                        subTitle.setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onClick(View v){
-                                System.out.println("I am here");
-                                Intent intent = new Intent(DetailActivity.this,SubjobsActivity.class);
+                            public void onClick(View v) {
+
+
+                                //int sid = getSub.getInt(SUB_ID);
+                                Intent intent = new Intent(DetailActivity.this, SubjobsActivity.class);
+
                                 Bundle bundle = new Bundle();
                                 bundle.putString("id",""+gid);
                                 intent.putExtras(bundle);
                                 startActivity(intent);
+
+
                             }
                         });
                         rLay.addView(view);
+
                     }
 
-                   //System.out.println(jdt+", "+jnm);
+
 
                 }catch (JSONException e){
 
@@ -224,4 +259,14 @@ public class DetailActivity extends AppCompatActivity {
         }
 
     }
+
+    /*public void submitOrder1(View view) {
+
+        //Toast.makeText(getApplicationContext(),"Going to link",Toast.LENGTH_LONG).show();
+
+        Uri uri = Uri.parse("http://www.mylelojobs.com"); // missing 'http://' will cause crashed
+        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        startActivity(intent);
+
+    }*/
 }
