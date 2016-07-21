@@ -50,7 +50,7 @@ public class viewAdapter extends CursorAdapter{
             String logoClean = jLog.substring(2);
             StringBuilder str = new StringBuilder(STRING_BASE_URL).append(logoClean);
 
-            Picasso.with(context).load(str.toString()).into(imgLogo);
+            Picasso.with(context).load(str.toString()).resize(70,70).centerCrop().into(imgLogo);
 
         }
 

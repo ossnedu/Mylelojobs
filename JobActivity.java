@@ -8,15 +8,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Looper;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -57,6 +60,9 @@ public class JobActivity extends AppCompatActivity
         new getJobs().execute();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        //"ewu".substring(1);
+        //String yep = "ewu".substring(1);
+        //Toast.makeText(getApplicationContext(),yep,Toast.LENGTH_LONG).show();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +76,7 @@ public class JobActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
+        drawer.addDrawerListener(toggle);
         toggle.syncState();
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -113,22 +119,15 @@ public class JobActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        }
-
+        Redirect direct = new Redirect();
+        Intent activity = direct.onClick(this,item);
+        startActivity(activity);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-    private class getJobs extends AsyncTask<String,String,String> {
+    private class getJobs extends AsyncTask<String,Void,String> {
 
         HttpURLConnection conn = null;
         BufferedReader reader = null;
@@ -142,6 +141,7 @@ public class JobActivity extends AppCompatActivity
             //conn.setRequestMethod("GET");
             //conn.setDoInput(true);
             //conn.setDoOutput(true);
+
             // conn.connect();
             int limit = 10;
             int page = 1;
@@ -168,6 +168,7 @@ public class JobActivity extends AppCompatActivity
                 InputStream inputStream = conn.getInputStream();
                 StringBuffer buffer = new StringBuffer();
                 if (inputStream == null) {
+
                     // Nothing to do.
                     //System.out.println("I just got out with nothing");
                     return null;
@@ -198,6 +199,7 @@ public class JobActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(String result) {
+
             if(result!=null){
                 //Toast.makeText(getApplicationContext(),result,Toast.LENGTH_LONG).show();
                 //System.out.println(result);
@@ -217,7 +219,7 @@ public class JobActivity extends AppCompatActivity
                     for (int i=0; i<jobArray.length(); i++){
                         //System.out.println("jobs"+jobArray.getJSONObject(i));
                         int id;
-                        String logo;
+                        //String logo;
                         String jn;
                         JSONArray sub;
                         String jSub="";
@@ -225,10 +227,53 @@ public class JobActivity extends AppCompatActivity
                         String sn;
                         JSONObject getChild = jobArray.getJSONObject(i);
                         id = getChild.getInt(JOB_ID);
-                        logo = getChild.getString(JOB_LOGO);
+                        String logo = getChild.getString(JOB_LOGO);
                         jn = getChild.getString(JOB_NAME);
                         sub = getChild.getJSONArray(JOB_SUB);
+
+                        if(logo.length() != 0) {
+                            final String STRING_BASE_URL = "http://www.mylelojobs.com";
+
+                            //StringBuffer lg = new StringBuffer(logo);
+                            String logoClean = logo.substring(2);
+                            StringBuilder str = new StringBuilder(STRING_BASE_URL);
+
+                            StringBuilder y = str.append(logoClean);
+                            String yy = y.toString();
+                            //Toast.makeText(getApplicationContext(),yy,Toast.LENGTH_LONG).show();
+
+                            /*try {
+                                //http://www.mylelojobs.com/company_logo/19802virus.jpg
+                                URL url = new URL(yy);
+                                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+                                //conn = (HttpURLConnection) url.openConnection();
+                                //connection.setRequestMethod("GET");
+                                //conn.connect();
+                                connection.setDoInput(true);
+                                connection.connect();
+                                InputStream input = connection.getInputStream();
+                                Bitmap bitmap = BitmapFactory.decodeStream(input);
+
+                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
+                                byte[] image1 = stream.toByteArray();
+                                cv.put(rootJobs.COL_LOGO,image1);
+                                //imgLogo.setImageBitmap(map);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }*/
+
+                            //Bitmap b=BitmapFactory.decodeResource(getResources(), yy);
+                            //ByteArrayOutputStream bos=new ByteArrayOutputStream();
+                            //b.compress(Bitmap.CompressFormat.PNG, 100, bos);
+                            //img=bos.toByteArray();
+
+
                         //System.out.println(jn);
+                        //Toast.makeText(getApplicationContext(),y,Toast.LENGTH_LONG).show();
+                        }
+
                         for(int j=0; j<sub.length(); j++){
 
                             JSONObject getSub = sub.getJSONObject(j);
@@ -241,8 +286,11 @@ public class JobActivity extends AppCompatActivity
 
                         }
                         //System.out.println("Am getting here");
-                        cv.put(rootJobs.COL_JOB_ID,id);cv.put(rootJobs.COL_NAME,jn);
-                        cv.put(rootJobs.COL_LOGO,logo);cv.put(rootJobs.COL_JOBS,logo);//cv.put(rootJobs.COL_JOBS,jSub);
+                        cv.put(rootJobs.COL_JOB_ID,id);
+                        cv.put(rootJobs.COL_NAME,jn);
+                        cv.put(rootJobs.COL_LOGO,logo);
+                        //cv.put(rootJobs.COL_JOBS,jn);
+                        //cv.put(rootJobs.COL_JOBS,jSub);
                         long confirm = db.insert(rootJobs.TABLE_NAME,null,cv);
                         if(confirm!=-1){
                             //Toast.makeText(getApplicationContext(),"Successfull",Toast.LENGTH_LONG).show();
@@ -288,4 +336,5 @@ public class JobActivity extends AppCompatActivity
             }
         }
     }
+
 }
