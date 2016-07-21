@@ -15,4 +15,11 @@
     <string name="not_registered_yet">Not Registered Yet?</string>
     <string name="action_register">Register Here</string>
     <string name="action_sign_in_short">Sign in</string>
+    <string name="title_activity_job">Numerous Jobs</string>
+    <string name="title_activity_detail">Jobs Details</string>
+    <string name="title_activity_subjobs">Subjob Details</string>
+    <string name="app_url">mylelojobs.com</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
 </resources>
