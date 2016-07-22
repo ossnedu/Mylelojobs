@@ -15,11 +15,13 @@ public class Redirect {
             activity = new Intent(context,jobTipsActivity.class);
             // Handle the camera action
         } else if (id == R.id.nav_gallery) {
-            //activity = new Intent(context,jobTipsActivity.class);
+            activity = new Intent(context,jobTipsActivity.class);
 
         } else if (id == R.id.nav_slideshow) {
+            activity = new Intent(context,jobTipsActivity.class);
 
         } else if (id == R.id.nav_manage) {
+            activity = new Intent(context,jobTipsActivity.class);
 
         }
         return activity;
