@@ -1,9 +1,12 @@
 package com.mylelojobs.android.mylelojobs;
 
+import android.content.Context;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +18,7 @@ import android.view.ViewGroup;
 import android.view.MenuInflater;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -33,6 +37,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import com.mylelojobs.android.mylelojobs.dbcontract.*;
+import com.squareup.picasso.Picasso;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -47,7 +52,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class DetailActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class DetailActivity extends AppCompatActivity {
     public String gid;
     public String sid;
 
@@ -55,47 +60,30 @@ public class DetailActivity extends AppCompatActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
 
         //Bundle getBundle = null;
         Bundle getBundle = this.getIntent().getExtras();
         gid = getBundle.getString("id");
         new getJobDetail().execute();
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.job, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -113,26 +101,6 @@ public class DetailActivity extends AppCompatActivity implements NavigationView.
 
         return super.onOptionsItemSelected(item);
     }
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
-
 
     private class getJobDetail extends AsyncTask<String,String,String> {
         HttpURLConnection conn = null;
@@ -270,17 +238,20 @@ public class DetailActivity extends AppCompatActivity implements NavigationView.
                     View v = LayoutInflater.from(getApplicationContext()).inflate(R.layout.show_job_items,rLay);
                     TextView mt = (TextView) v.findViewById(R.id.jobTitle);
                     TextView md = (TextView) v.findViewById(R.id.profile);
-                    //TextView sj = (TextView) v.findViewById(R.id.subJob);
+                    ImageView imgLogo = (ImageView) v.findViewById(R.id.logo);
 
-                    //TextView item = (TextView)findViewById(R.id.detailView);
-                    //View ch = getLayoutInflater().inflate(R.layout.show_job_items,null);
-                    // item.addView(ch);
+                    if(lg.length()>4)
+                    {
+                        String logoClean = lg.substring(2);
+                        StringBuilder str = new StringBuilder("http://www.mylelojobs.com").append(logoClean);
+                        Picasso.with(getApplicationContext()).load(str.toString()).placeholder(R.drawable.logo3).error(R.drawable.logo3).into(imgLogo);
+                    }
 
-                    String jnm = nm;
-                    String jdt = pr;
+
+
                     //String jsb = jjSub;
-                    mt.setText(jnm);
-                    md.setText(jdt);
+                    mt.setText(nm);
+                    md.setText(pr);
                     //sj.setText(jsb);
 
                     for (int i=0; i<sb.length(); i++){
@@ -293,6 +264,8 @@ public class DetailActivity extends AppCompatActivity implements NavigationView.
                         TextView subTitle = (TextView)view.findViewById(R.id.subjobTitle);
                         subTitle.setId(gid);
                         subTitle.setText(sn);
+                        subTitle.measure(0,0);
+                        int height = subTitle.getMeasuredHeight();
                         //subTitle.setPadding(10,0,0,0);
 
                         subTitle.setOnClickListener(new View.OnClickListener() {
@@ -311,7 +284,8 @@ public class DetailActivity extends AppCompatActivity implements NavigationView.
 
                             }
                         });
-                        rLay.addView(view);
+
+                        rLay.addView(view,rLay.getWidth(),height);
 
                     }
 
@@ -325,13 +299,5 @@ public class DetailActivity extends AppCompatActivity implements NavigationView.
 
     }
 
-    /*public void submitOrder1(View view) {
 
-        //Toast.makeText(getApplicationContext(),"Going to link",Toast.LENGTH_LONG).show();
-
-        Uri uri = Uri.parse("http://www.mylelojobs.com"); // missing 'http://' will cause crashed
-        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-        startActivity(intent);
-
-    }*/
 }

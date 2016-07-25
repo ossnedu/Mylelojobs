@@ -21,20 +21,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".LoginActivity" />
+        <activity android:name=".LoginActivity"
+            android:parentActivityName=".MainActivity" />
+        <meta-data
+            android:name="android.support.PARENT_ACTIVITY"
+            android:value="com.mylelojobs.android.mylelojobs.MainActivity" />
+
         <activity
             android:name=".JobActivity"
             android:label="@string/title_activity_job"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".DetailActivity"
             android:label="@string/title_activity_detail"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:parentActivityName=".JobActivity"/>
         <activity
             android:name=".SubjobsActivity"
             android:label="@string/title_activity_subjobs"
+            android:parentActivityName=".JobActivity" />
+        <activity
+            android:name=".jobTipsActivity"
+            android:label="@string/title_activity_job_tips"
             android:theme="@style/AppTheme.NoActionBar"></activity>
-
     </application>
 
 </manifest>

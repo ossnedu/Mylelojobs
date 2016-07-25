@@ -38,7 +38,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class SubjobsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class SubjobsActivity extends AppCompatActivity {
 
     public String gid;
     @Override
@@ -48,42 +48,27 @@ public class SubjobsActivity extends AppCompatActivity implements NavigationView
         Bundle getBundle = this.getIntent().getExtras();
         gid = getBundle.getString("id");
         new getSubjobs().execute();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        /*FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
-        });
+        });*/
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.setDrawerListener(toggle);
-        toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
     }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.job, menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
@@ -102,24 +87,7 @@ public class SubjobsActivity extends AppCompatActivity implements NavigationView
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
 
     private class getSubjobs extends AsyncTask<String,String,String> {
         HttpURLConnection conn = null;
@@ -232,10 +200,15 @@ public class SubjobsActivity extends AppCompatActivity implements NavigationView
                     LinearLayout rLay= (LinearLayout) findViewById(R.id.subjobView);
                     View v = LayoutInflater.from(getApplicationContext()).inflate(R.layout.subjobs_item,rLay);
                     TextView sbt = (TextView) v.findViewById(R.id.subjobTitle);
+
+
                     TextView des = (TextView) v.findViewById(R.id.subjobDesc);
                     TextView mt = (TextView) v.findViewById(R.id.subjobTyp);
                     TextView md = (TextView) v.findViewById(R.id.subjobCourse);
                     TextView dty = (TextView) v.findViewById(R.id.subjobLoc);
+
+
+
                     /*TextView cse = (TextView)v.findViewById(R.id.course);
                     TextView grd = (TextView)v.findViewById(R.id.degGrade);
                     TextView exp = (TextView)v.findViewById(R.id.jobExp);
@@ -245,10 +218,10 @@ public class SubjobsActivity extends AppCompatActivity implements NavigationView
                     // item.addView(ch);
 
                     sbt.setText(nm);
-                    des.setText(pr);
-                    mt.setText(typ);
-                    md.setText(course);
-                    dty.setText(loc);
+                    des.setText("JOB DESCRIPTION: "+pr);
+                    mt.setText("REQUIRED GRADE: "+typ);
+                    md.setText("COURSE OF STUDY: "+course);
+                    dty.setText("LOCATION: "+loc);
 
 
                     /*String jnm = nm; String glg = lg; String gdt = dt; String gcs = course;
